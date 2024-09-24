@@ -9,9 +9,9 @@ import java.io.Serializable;
  */
 @Data
 public class Pelicula implements Serializable {
-    private String id;
+    private int id;
     private String titulo;
-    private String año;
+    private int año;
     private String director;
     private String genero;
 
