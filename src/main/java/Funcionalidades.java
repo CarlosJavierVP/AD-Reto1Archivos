@@ -92,15 +92,14 @@ public class Funcionalidades {
     }
 
     public static void generarArchivosHTML(){
-        carpetaSalida("Salida");
+        //carpetaSalida("Salida");
 
         Pelicula p = new Pelicula();
 
         for (Pelicula peli : leerArchivo("peliculas.csv")){
             String nombreHTML = peli.getId() + " - " + peli.getTitulo()+".html";
-            try (BufferedWriter bw = new BufferedWriter(new FileWriter("./Salida/"+nombreHTML))){
+            try (BufferedWriter bw = new BufferedWriter(new FileWriter(carpetaSalida("Salida")+nombreHTML))){
 
-                //bw.write(peli.getId());
                 String plantilla = leerPlantilla("plantilla.html").toString();
                 plantilla = plantilla.replace("%%1%%", peli.getId() +
                         plantilla.replace("%%2%%", peli.getTitulo() +
@@ -108,6 +107,7 @@ public class Funcionalidades {
                         plantilla.replace("%%4%%", peli.getDirector() +
                         plantilla.replace("%%5%%", peli.getGenero())))));
 
+                bw.write(plantilla);
 
             } catch (IOException e) {
                 throw new RuntimeException(e);
@@ -116,7 +116,6 @@ public class Funcionalidades {
         }
 
     }
-
 
 
 
