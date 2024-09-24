@@ -13,22 +13,16 @@ public class Funcionalidades {
      * @param args donde se ejecutan las funcionalidades de la app
      */
     public static void main(String[] args) {
-        /*
-        * Métodos en el main:
-        *   -Generar archivo html con la info del csv y con la estrutura de la plantilla
-        *
-        * Refactorizar***
-        *
-        */
 
         generarArchivosHTML();
+
     }
 
     /**
      * Método leerArchivo
      * @param archivo ruta para leer documento
      */
-    public static void leerArchivo(String archivo){
+    public static ArrayList<Pelicula> leerArchivo(String archivo){
         var listaPeliculas = new ArrayList<Pelicula>();
         try (BufferedReader br = new BufferedReader(new FileReader(archivo))){
             String cadena;
@@ -53,6 +47,7 @@ public class Funcionalidades {
             System.out.println(peli);
         }
 
+        return listaPeliculas;
     }
 
     /**
@@ -78,7 +73,7 @@ public class Funcionalidades {
      * Método leerPlantilla para procesar un documento HTML
      * @param html ruta de la plantilla
      */
-    public static void leerPlantilla(String html){
+    public static StringBuilder leerPlantilla(String html){
         StringBuilder sb = new StringBuilder();
         try (BufferedReader br = new BufferedReader(new FileReader(html))){
             String linea;
@@ -93,24 +88,34 @@ public class Funcionalidades {
 
         System.out.println(sb);
 
+        return sb;
     }
 
     public static void generarArchivosHTML(){
-        leerArchivo("peliculas.csv");
-        leerPlantilla("plantilla.html");
+        carpetaSalida("Salida");
+
+        Pelicula p = new Pelicula();
+
+        for (Pelicula peli : leerArchivo("peliculas.csv")){
+            String nombreHTML = peli.getId() + " - " + peli.getTitulo()+".html";
+            try (BufferedWriter bw = new BufferedWriter(new FileWriter("./Salida/"+nombreHTML))){
+
+                //bw.write(peli.getId());
+                String plantilla = leerPlantilla("plantilla.html").toString();
+                plantilla = plantilla.replace("%%1%%", peli.getId() +
+                        plantilla.replace("%%2%%", peli.getTitulo() +
+                        plantilla.replace("%%3%%", peli.getAño() +
+                        plantilla.replace("%%4%%", peli.getDirector() +
+                        plantilla.replace("%%5%%", peli.getGenero())))));
 
 
-        Pelicula peli = new Pelicula();
-        try (BufferedWriter bw = new BufferedWriter(new FileWriter(carpetaSalida("Salida")))){
-            bw.write(peli.getId());
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
 
-        } catch (IOException e) {
-            throw new RuntimeException(e);
         }
 
     }
-
-
 
 
 
