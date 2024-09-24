@@ -7,7 +7,6 @@ import java.util.ArrayList;
  * @author Carlos Javier Valenzuela
  */
 public class Funcionalidades {
-
     /**
      * Método main
      * @param args donde se ejecutan las funcionalidades de la app
@@ -17,7 +16,6 @@ public class Funcionalidades {
         generarArchivosHTML();
 
     }
-
     /**
      * Método leerArchivo
      * @param archivo ruta para leer documento
@@ -43,10 +41,6 @@ public class Funcionalidades {
             throw new RuntimeException(e);
         }
 
-        for (Pelicula peli : listaPeliculas){
-            System.out.println(peli);
-        }
-
         return listaPeliculas;
     }
 
@@ -57,6 +51,7 @@ public class Funcionalidades {
     public static File carpetaSalida(String ruta){
         // Genera una carpeta llamada "salida"
         File f = new File(ruta);
+
         if (!f.exists()){
             String[] trozos = ruta.split("/");
             String directorio ="";
@@ -66,6 +61,7 @@ public class Funcionalidades {
             f = new File(directorio);
             f.mkdirs();
         }
+
         return f;
     }
 
@@ -86,28 +82,23 @@ public class Funcionalidades {
             throw new RuntimeException(e);
         }
 
-        System.out.println(sb);
-
         return sb;
     }
 
     public static void generarArchivosHTML(){
-        //carpetaSalida("Salida");
-
-        Pelicula p = new Pelicula();
 
         for (Pelicula peli : leerArchivo("peliculas.csv")){
+            String ruta = "Salida/";
             String nombreHTML = peli.getId() + " - " + peli.getTitulo()+".html";
-            try (BufferedWriter bw = new BufferedWriter(new FileWriter(carpetaSalida("Salida")+nombreHTML))){
+            try (BufferedWriter bw = new BufferedWriter(new FileWriter(carpetaSalida(ruta+nombreHTML)))){
 
-                String plantilla = leerPlantilla("plantilla.html").toString();
-                plantilla = plantilla.replace("%%1%%", peli.getId() +
-                        plantilla.replace("%%2%%", peli.getTitulo() +
-                        plantilla.replace("%%3%%", peli.getAño() +
-                        plantilla.replace("%%4%%", peli.getDirector() +
-                        plantilla.replace("%%5%%", peli.getGenero())))));
+                String nuevoArchivo = leerPlantilla("plantilla.html").toString();
+                nuevoArchivo = nuevoArchivo.replace("%%2%%", peli.getTitulo());
+                nuevoArchivo = nuevoArchivo.replace("%%3%%", String.valueOf(peli.getAño()));
+                nuevoArchivo = nuevoArchivo.replace("%%4%%", peli.getDirector());
+                nuevoArchivo = nuevoArchivo.replace("%%5%%", peli.getGenero());
 
-                bw.write(plantilla);
+                bw.write(nuevoArchivo);
 
             } catch (IOException e) {
                 throw new RuntimeException(e);
