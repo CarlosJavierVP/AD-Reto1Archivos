@@ -19,12 +19,14 @@ public class Funcionalidades {
     /**
      * Método leerArchivo
      * @param archivo ruta para leer documento
+     * @return listaPeliculas
      */
     public static ArrayList<Pelicula> leerArchivo(String archivo){
         var listaPeliculas = new ArrayList<Pelicula>();
         try (BufferedReader br = new BufferedReader(new FileReader(archivo))){
             String cadena;
             while ((cadena = br.readLine()) != null){
+                // cada línea se trocea para asignar al objeto película su correspondiente atributo y se añade a la lista de películas
                 String[] trozo = cadena.split(",");
                 var peli = new Pelicula();
                 peli.setId(Integer.parseInt(trozo[0]));
@@ -47,6 +49,7 @@ public class Funcionalidades {
     /**
      * Método carpetaSalida para crear un directorio
      * @param ruta nombre/ruta del directorio que se va a crear
+     * @return File
      */
     public static File carpetaSalida(String ruta){
         // Genera una carpeta llamada "salida"
@@ -62,12 +65,15 @@ public class Funcionalidades {
             f.mkdirs();
         }
 
+        f = new File(ruta);
+
         return f;
     }
 
     /**
      * Método leerPlantilla para procesar un documento HTML
      * @param html ruta de la plantilla
+     * @return StringBuilder para leer el archivo HTML
      */
     public static StringBuilder leerPlantilla(String html){
         StringBuilder sb = new StringBuilder();
@@ -85,13 +91,17 @@ public class Funcionalidades {
         return sb;
     }
 
+    /**
+     * Método generarArchivosHTML
+     */
     public static void generarArchivosHTML(){
 
+        //Se llama al método leerArchivo que devuelve una lista, y por cada película se generando un archivo HTML
         for (Pelicula peli : leerArchivo("peliculas.csv")){
             String ruta = "Salida/";
             String nombreHTML = peli.getId() + " - " + peli.getTitulo()+".html";
             try (BufferedWriter bw = new BufferedWriter(new FileWriter(carpetaSalida(ruta+nombreHTML)))){
-
+                // Se pasa a String la plantilla de HTML (que es StringBuilder) y se reemplaza con el método replace los valores que queremos sustituir por los atributos de cada película
                 String nuevoArchivo = leerPlantilla("plantilla.html").toString();
                 nuevoArchivo = nuevoArchivo.replace("%%2%%", peli.getTitulo());
                 nuevoArchivo = nuevoArchivo.replace("%%3%%", String.valueOf(peli.getAño()));
