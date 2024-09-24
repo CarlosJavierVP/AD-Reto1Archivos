@@ -15,16 +15,13 @@ public class Funcionalidades {
     public static void main(String[] args) {
         /*
         * Métodos en el main:
-        *   -Leer archivo csv
-        *   -Leer plantilla html
         *   -Generar archivo html con la info del csv y con la estrutura de la plantilla
         *
         * Refactorizar***
         *
         */
 
-        leerArchivo("peliculas.csv");
-        leerPlantilla("plantilla.html");
+        generarArchivosHTML();
     }
 
     /**
@@ -62,7 +59,7 @@ public class Funcionalidades {
      * Método carpetaSalida para crear un directorio
      * @param ruta nombre/ruta del directorio que se va a crear
      */
-    public static void carpetaSalida(String ruta){
+    public static File carpetaSalida(String ruta){
         // Genera una carpeta llamada "salida"
         File f = new File(ruta);
         if (!f.exists()){
@@ -74,6 +71,7 @@ public class Funcionalidades {
             f = new File(directorio);
             f.mkdirs();
         }
+        return f;
     }
 
     /**
@@ -81,11 +79,10 @@ public class Funcionalidades {
      * @param html ruta de la plantilla
      */
     public static void leerPlantilla(String html){
-        carpetaSalida("Salida");
-
         StringBuilder sb = new StringBuilder();
         try (BufferedReader br = new BufferedReader(new FileReader(html))){
             String linea;
+            // cada línea del archivo HTML añadirla en el String y a su vez incorporarla en el StringBuilder en cada iteración
             while ((linea = br.readLine()) != null ){
                 sb.append(linea).append("\n");
             }
@@ -97,6 +94,23 @@ public class Funcionalidades {
         System.out.println(sb);
 
     }
+
+    public static void generarArchivosHTML(){
+        leerArchivo("peliculas.csv");
+        leerPlantilla("plantilla.html");
+
+
+        Pelicula peli = new Pelicula();
+        try (BufferedWriter bw = new BufferedWriter(new FileWriter(carpetaSalida("Salida")))){
+            bw.write(peli.getId());
+
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+    }
+
+
 
 
 
